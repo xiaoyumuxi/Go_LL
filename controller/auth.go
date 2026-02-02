@@ -34,8 +34,13 @@ func Login(c *gin.Context, db *gorm.DB) {
 		return
 	}
 
-	// 3. TODO: 生成 JWT Token (这里先用模拟字符串代替)
-	token := "valid-token-for-" + user.Username
+	// 3. 生成token
+	token, err := common.GenerateToken(user.ID, user.Username)
+	if err != nil {
+		common.Fail(500, "生成 Token 失败", c)
+		return
+	}
+
 	common.Success(gin.H{"token": token}, "登录成功", c)
 }
 
@@ -45,13 +50,22 @@ func AuthMiddleware() gin.HandlerFunc {
 		// 从 Header 获取 Token
 		token := c.GetHeader("Authorization")
 
-		// 简单的 Token 验证逻辑
-		if token == "" || token != "valid-token-for-admin" {
-			c.JSON(401, gin.H{"msg": "权限不足，请先登录"})
-			c.Abort() // 拦截，不许往后走
+		if token == "" {
+			common.Fail(401, "未登录，请先提供 Token", c)
+			c.Abort()
 			return
 		}
 
-		c.Next() // 放行
+		claims, err := common.ParseToken(token)
+		if err != nil {
+			common.Fail(401, "Token 无效或已过期", c)
+			c.Abort()
+			return
+		}
+
+		c.Set("user_id", claims.UserID)
+		c.Set("username", claims.Username)
+
+		c.Next()
 	}
 }
