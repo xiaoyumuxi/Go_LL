@@ -7,9 +7,6 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 )
 
-// MySecret 定义一个密钥，实际项目建议放在配置文件里
-var MySecret = []byte(Conf.Jwt.Secret)
-
 // MyClaims 自定义声明结构体，也就是你要存入 Token 的信息
 type MyClaims struct {
 	UserID               uint   `json:"user_id"`
@@ -19,6 +16,7 @@ type MyClaims struct {
 
 // GenerateToken 生成 JWT
 func GenerateToken(userID uint, username string) (string, error) {
+	var MySecret = []byte(Conf.Jwt.Secret)
 	// 1. 创建我们要存的信息
 	claims := MyClaims{
 		userID,
@@ -40,7 +38,7 @@ func ParseToken(tokenString string) (*MyClaims, error) {
 	// 解析并校验 Token
 	token, err := jwt.ParseWithClaims(tokenString, &MyClaims{}, func(token *jwt.Token) (interface{}, error) {
 		// 这行代码最核心：告诉解析器，用哪个密钥去验证签名
-		return MySecret, nil
+		return []byte(Conf.Jwt.Secret), nil
 	})
 
 	if err != nil {

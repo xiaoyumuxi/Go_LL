@@ -2,14 +2,12 @@ package controller
 
 import (
 	"gin-crud/common"
-	"gin-crud/models"
+	"gin-crud/service"
 
 	"github.com/gin-gonic/gin"
-	"golang.org/x/crypto/bcrypt"
-	"gorm.io/gorm"
 )
 
-func Login(c *gin.Context, db *gorm.DB) {
+func Login(c *gin.Context, s *service.UserService) {
 	var loginData struct {
 		Username string `json:"username" binding:"required"`
 		Password string `json:"password" binding:"required"`
@@ -20,24 +18,10 @@ func Login(c *gin.Context, db *gorm.DB) {
 		return
 	}
 
-	var user models.User
-	// 1. 查找用户
-	if err := db.Where("username = ?", loginData.Username).First(&user).Error; err != nil {
-		common.Fail(404, "用户不存在", c)
-		return
-	}
-
-	// 2. 验证密码
-	err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(loginData.Password))
+	// 直接调用 Service 层的 Login
+	token, err := s.Login(loginData.Username, loginData.Password)
 	if err != nil {
-		common.Fail(401, "密码错误", c)
-		return
-	}
-
-	// 3. 生成token
-	token, err := common.GenerateToken(user.ID, user.Username)
-	if err != nil {
-		common.Fail(500, "生成 Token 失败", c)
+		common.Fail(401, err.Error(), c)
 		return
 	}
 

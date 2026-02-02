@@ -2,6 +2,7 @@ package common
 
 import (
 	"fmt"
+
 	"github.com/spf13/viper"
 )
 
@@ -36,7 +37,7 @@ var Conf *Config
 func InitConfig() {
 	viper.SetConfigName("config") // 文件名
 	viper.SetConfigType("yaml")   // 文件格式
-	viper.AddConfigPath(".")      // 在当前目录查找
+	viper.AddConfigPath("..")     // 在当前目录查找
 
 	err := viper.ReadInConfig()
 	if err != nil {

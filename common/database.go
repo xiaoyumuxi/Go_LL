@@ -1,8 +1,7 @@
-package main
+package common
 
 import (
 	"fmt"
-	"gin-crud/common"
 	"gin-crud/models"
 
 	"gorm.io/driver/mysql"
@@ -12,7 +11,7 @@ import (
 var DB *gorm.DB
 
 func InitDB() {
-	c := common.Conf.Datasource
+	c := Conf.Datasource
 	dsn := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=%s&parseTime=True&loc=Local",
 		c.Username, c.Password, c.Host, c.Port, c.Database, c.Charset)
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
