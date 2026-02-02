@@ -1,6 +1,8 @@
 package main
 
 import (
+	"fmt"
+	"gin-crud/common"
 	"gin-crud/models"
 
 	"gorm.io/driver/mysql"
@@ -10,7 +12,9 @@ import (
 var DB *gorm.DB
 
 func InitDB() {
-	dsn := "root:105822@tcp(127.0.0.1:3306)/go?charset=utf8mb4&parseTime=True&loc=Local"
+	c := common.Conf.Datasource
+	dsn := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=%s&parseTime=True&loc=Local",
+		c.Username, c.Password, c.Host, c.Port, c.Database, c.Charset)
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
 		panic("数据库连接失败: " + err.Error())

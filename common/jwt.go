@@ -8,7 +8,7 @@ import (
 )
 
 // MySecret 定义一个密钥，实际项目建议放在配置文件里
-var MySecret = []byte("这是我的加密密钥")
+var MySecret = []byte(Conf.Jwt.Secret)
 
 // MyClaims 自定义声明结构体，也就是你要存入 Token 的信息
 type MyClaims struct {

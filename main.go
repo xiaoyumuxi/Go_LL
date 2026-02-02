@@ -1,12 +1,15 @@
 package main
 
 import (
+	"gin-crud/common"
 	"gin-crud/controller"
 
 	"github.com/gin-gonic/gin"
 )
 
 func main() {
+	common.InitConfig()
+
 	InitDB() // 初始化数据库
 	r := gin.Default()
 
