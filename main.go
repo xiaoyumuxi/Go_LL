@@ -10,12 +10,12 @@ func main() {
 	InitDB() // 初始化数据库
 	r := gin.Default()
 
-	// 路由分组
+	// 公开接口
+	r.POST("/login", func(c *gin.Context) { controller.Login(c, DB) })
+	r.POST("/register", func(c *gin.Context) { controller.CreateUser(c, DB) })
+	// 路由分组1
 	userGroup := r.Group("/users")
 	{
-		userGroup.POST("/", func(c *gin.Context) {
-			controller.CreateUser(c, DB)
-		})
 		userGroup.GET("/:id", func(c *gin.Context) {
 			controller.GetUser(c, DB)
 		})
