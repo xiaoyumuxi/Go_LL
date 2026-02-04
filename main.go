@@ -20,15 +20,28 @@ import (
 // @BasePath        /
 func main() {
 	common.InitConfig()
+	common.InitLogger()        // 初始化日志
+	defer common.Logger.Sync() // 刷新缓冲
 
 	common.InitDB() // 初始化数据库
 	r := gin.Default()
+
+	// 使用自定义的 Logger 和 Recovery
+	r = gin.New()
+	r.Use(common.GinLogger(), common.GinRecovery(true))
 
 	userService := &service.UserService{DB: common.DB}
 
 	// Swagger 路由
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
+	// 配置热更新测试接口
+	r.GET("/config-test", func(c *gin.Context) {
+		c.JSON(200, gin.H{
+			"jwt_expire": common.Conf.Jwt.Expire,
+			"port":       common.Conf.Server.Port,
+		})
+	})
 	// 公开接口
 	r.POST("/login", func(c *gin.Context) {
 		controller.Login(c, userService)
