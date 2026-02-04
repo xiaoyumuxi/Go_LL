@@ -7,7 +7,17 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// GetUser 处理获取用户详情的请求
+// GetUser 获取用户详情
+// @Summary      获取用户详情
+// @Description  根据 ID 获取用户信息
+// @Tags         users
+// @Accept       json
+// @Produce      json
+// @Param        id   path      string  true  "User ID"
+// @Success      200  {object}  common.Response{data=models.User}
+// @Failure      404  {object}  common.Response
+// @Failure      500  {object}  common.Response
+// @Router       /users/{id} [get]
 func GetUser(c *gin.Context, s *service.UserService) {
 	id := c.Param("id")
 
@@ -24,7 +34,17 @@ func GetUser(c *gin.Context, s *service.UserService) {
 	common.Success(user, "获取成功", c)
 }
 
-// DeleteUser 处理删除用户的请求
+// DeleteUser 删除用户
+// @Summary      删除用户
+// @Description  根据 ID 删除用户
+// @Tags         users
+// @Accept       json
+// @Produce      json
+// @Param        id   path      string  true  "User ID"
+// @Success      200  {object}  common.Response
+// @Failure      404  {object}  common.Response
+// @Failure      500  {object}  common.Response
+// @Router       /users/{id} [delete]
 func DeleteUser(c *gin.Context, s *service.UserService) {
 	id := c.Param("id")
 
@@ -41,7 +61,19 @@ func DeleteUser(c *gin.Context, s *service.UserService) {
 	common.Success(nil, "删除成功", c)
 }
 
-// UpdateUser 处理更新用户的请求
+// UpdateUser 更新用户
+// @Summary      更新用户
+// @Description  根据 ID 更新用户信息
+// @Tags         users
+// @Accept       json
+// @Produce      json
+// @Param        id    path      string                 true  "User ID"
+// @Param        data  body      map[string]interface{} true  "Update Data"
+// @Success      200   {object}  common.Response
+// @Failure      400   {object}  common.Response
+// @Failure      404   {object}  common.Response
+// @Failure      500   {object}  common.Response
+// @Router       /users/{id} [put]
 func UpdateUser(c *gin.Context, s *service.UserService) {
 	id := c.Param("id")
 	var updateData map[string]interface{}

@@ -7,8 +7,17 @@ import (
 	"gin-crud/service"
 
 	"github.com/gin-gonic/gin"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
+
+	_ "gin-crud/docs" // 必须导入生成的 docs 包
 )
 
+// @title           Gin CRUD API
+// @version         1.0
+// @description     这是一个基于 Gin 的 CRUD 示例项目
+// @host            localhost:8080
+// @BasePath        /
 func main() {
 	common.InitConfig()
 
@@ -16,6 +25,10 @@ func main() {
 	r := gin.Default()
 
 	userService := &service.UserService{DB: common.DB}
+
+	// Swagger 路由
+	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+
 	// 公开接口
 	r.POST("/login", func(c *gin.Context) {
 		controller.Login(c, userService)

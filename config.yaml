@@ -5,9 +5,9 @@ datasource:
   driverName: mysql
   host: 127.0.0.1
   port: 3306
-  database: gin_db
+  database: go
   username: root
-  password: your_password
+  password: 105822
   charset: utf8mb4
 
 jwt:
