@@ -11,6 +11,7 @@ import (
 type Config struct {
 	Server     Server     `mapstructure:"server"`
 	Datasource Datasource `mapstructure:"datasource"`
+	Redis      Redis      `mapstructure:"redis"`
 	Jwt        Jwt        `mapstructure:"jwt"`
 }
 
@@ -26,6 +27,12 @@ type Datasource struct {
 	Username   string `mapstructure:"username"`
 	Password   string `mapstructure:"password"`
 	Charset    string `mapstructure:"charset"`
+}
+
+type Redis struct {
+	Addr     string `mapstructure:"addr"`
+	Password string `mapstructure:"password"`
+	DB       int    `mapstructure:"db"`
 }
 
 type Jwt struct {
@@ -60,8 +67,6 @@ func InitConfig() {
 			log.Printf("配置文件重载失败: %v", err)
 		} else {
 			log.Printf("配置文件重载成功. 新端口: %d", Conf.Server.Port)
-			// 注意：这里虽然更新了 Conf 变量，但已经启动的 Server (gin.Run) 不会自动切换端口。
-			// 热更新通常用于动态开关、日志级别、缓存过期时间等运行时可变的参数。
 		}
 	})
 }

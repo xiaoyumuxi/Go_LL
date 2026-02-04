@@ -10,6 +10,11 @@ datasource:
   password: 105822
   charset: utf8mb4
 
+redis:
+  addr: "127.0.0.1:6379"
+  password: ""
+  db: 0
+
 jwt:
   secret: "your-very-secret-key-here"
   expire: 24 # 过期时间（小时）

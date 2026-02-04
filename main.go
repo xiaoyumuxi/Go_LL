@@ -23,14 +23,18 @@ func main() {
 	common.InitLogger()        // 初始化日志
 	defer common.Logger.Sync() // 刷新缓冲
 
-	common.InitDB() // 初始化数据库
-	r := gin.Default()
+	common.InitDB()    // 初始化数据库
+	common.InitRedis() // 初始化 Redis
 
 	// 使用自定义的 Logger 和 Recovery
-	r = gin.New()
+	r := gin.New()
 	r.Use(common.GinLogger(), common.GinRecovery(true))
 
-	userService := &service.UserService{DB: common.DB}
+	// 注入 DB 和 Redis
+	userService := &service.UserService{
+		DB:  common.DB,
+		RDB: common.RDB,
+	}
 
 	// Swagger 路由
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
@@ -42,9 +46,16 @@ func main() {
 			"port":       common.Conf.Server.Port,
 		})
 	})
+
 	// 公开接口
 	r.POST("/login", func(c *gin.Context) {
 		controller.Login(c, userService)
+	})
+	r.POST("/refresh", func(c *gin.Context) {
+		controller.RefreshToken(c, userService)
+	})
+	r.POST("/logout", func(c *gin.Context) {
+		controller.Logout(c, userService)
 	})
 
 	r.POST("/register", func(c *gin.Context) {
