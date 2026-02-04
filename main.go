@@ -3,7 +3,6 @@ package main
 import (
 	"gin-crud/common"
 	"gin-crud/controller"
-	"gin-crud/dao"
 	"gin-crud/models"
 	"gin-crud/service"
 
@@ -39,13 +38,13 @@ func main() {
 	userGroup := r.Group("/users")
 	{
 		userGroup.GET("/:id", func(c *gin.Context) {
-			dao.GetUser(c, common.DB)
+			controller.GetUser(c, userService)
 		})
 		userGroup.PUT("/:id", func(c *gin.Context) {
-			dao.UpdateUser(c, common.DB)
+			controller.UpdateUser(c, userService)
 		})
 		userGroup.DELETE("/:id", func(c *gin.Context) {
-			dao.DeleteUser(c, common.DB)
+			controller.DeleteUser(c, userService)
 		})
 	}
 
